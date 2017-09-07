@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        div{
+            width: 300px;
+            height: 50px;
+            border: 1px solid #000;
+            display: none;
+        }
+    </style>
+    <script src="js/jquery-2.1.4.js"></script>
+</head>
+<body>
+<input type="text" class="checkInput" name="jd" placeholder="经度" rel-msg="请输入正确的经度" rel-regExp="^([0-9]|[1-9][0-9]|1[0-7][0-9])$"/>
+<input type="text" class="checkInput" name="wd" placeholder="纬度" rel-msg="请输入正确的纬度" rel-regExp="^([0-9]|[1-9][0-9]|1[0-7][0-9])$"/>
+<br>
+<input type="text" class="checkInput" name="du" placeholder="度" rel-msg="请输入正确的度数" rel-regExp="^([0-9]|[1-5][0-9])$"/>
+<input type="text" class="checkInput" name="fen" placeholder="分" rel-msg="请输入正确的分" rel-regExp="^([0-9]|[1-5][0-9])$"/>
+<input type="text" class="checkInput" name="miao" placeholder="秒" rel-msg="请输入正确的秒" rel-regExp="^([0-9]|[1-5][0-9])$"/>
+<input type="button" id="js-submit" value="提交"/>
+<div id="error"></div>
+</body>
+</html>
+<script>
+    /**
+        通用校验函数：根据 input 各自的自定义属性 rel-regExp 的值（正则表达式），校验其值
+        注意：该函数是一个封装的通用函数，点击提交的事件中需要用到该函数的返回值
+     */
+    function checkInput(obj) {
+        var regExp = new RegExp(obj.attr('rel-regExp'));//正则表达式
+        if (regExp.test(obj.val())) {//进行匹配
+            $('#error').html('').hide();//通过，则隐藏错误信息提示框
+            return true;
+        } else {
+            obj.focus();//光标定位到校验不通过的 input 输入框
+            $('#error').html(obj.attr('rel-msg')).show();//根据自定义属性 rel-msg 的错误信息进行提示
+            return false;
+        }
+    }
+    $(function(){
+        //为input绑定keyup事件
+        $('input.checkInput').on('keyup', function(){
+            checkInput($(this));//调用通用的校验函数
+        });
+        //点击提交按钮
+        $('#js-submit').on('click', function () {
+            var flag = true;//是否校验成功
+            $('input.checkInput').each(function(){//遍历每一个 input 输入框，进行校验
+                if (!checkInput($(this))) {
+                    flag = false;//只要有一个校验不通过，就返回 false
+                    return false;//结束 each 循环
+                }
+            });
+            //所有的 input 输入框都校验通过，则可以提交
+            if (flag) {
+                alert('提交成功');
+            }
+        });
+    });
+</script>
